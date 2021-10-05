@@ -21,3 +21,15 @@ exports.index = function (req, res) {
     }
   );
 };
+
+exports.record_list = function (req, res, next) {
+  Record.find({}, 'title author')
+    .sort({ title: 1 })
+    .populate('author')
+    .exec(function (err, list_records) {
+      if (err) {
+        return next(err);
+      }
+      res.render('record_list', { title: 'Record Stock', record_list: list_records });
+    });
+};
