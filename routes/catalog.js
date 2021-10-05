@@ -13,7 +13,7 @@ router.get('/', record_controller.index);
 // router.get('/record/:id/update', record_controller.record_update_get);
 // router.post('/record/:id/update', record_controller.record_update_post);
 // router.get('/record/:id', record_controller.record_detail);
-// router.get('/records', record_controller.record_list);
+router.get('/records', record_controller.record_list);
 
 // router.get('/artist/create', artist_controller.artist_create_get);
 // router.post('/artist/create', artist_controller.artist_create_post);

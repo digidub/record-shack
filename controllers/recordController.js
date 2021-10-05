@@ -23,9 +23,9 @@ exports.index = function (req, res) {
 };
 
 exports.record_list = function (req, res, next) {
-  Record.find({}, 'title author')
+  Record.find({}, 'title artist')
     .sort({ title: 1 })
-    .populate('author')
+    .populate('artist')
     .exec(function (err, list_records) {
       if (err) {
         return next(err);
