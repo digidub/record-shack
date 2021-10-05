@@ -1,5 +1,5 @@
 var Artist = require('../models/artist');
-var Record = require('../models/book');
+var Record = require('../models/record');
 var async = require('async');
 
 exports.author_list = function (req, res, next) {
