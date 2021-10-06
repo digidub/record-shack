@@ -6,13 +6,15 @@ block content
     ul
         each record in record_list
             li
-                a(href=record.url) #{record.title} 
+                a(href=record.url) #{record.title}
                 | - 
                 a(href=record.artist.url) #{record.artist.name}
-                | - 
-                a(href=record.genre.url) #{record.genre.name}
-                | - 
+                p= record.year
+                p
                 a(href=record.label.url) #{record.label.name}
+                p
+                a(href=record.genre.url) #{record.genre.name}
+                |
 
         else
             li There are no books.
