@@ -1,0 +1,19 @@
+extends layout
+
+block content
+
+  h1 Label: #{label.name}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Records
+
+    dl
+      each record in label_records
+        dt
+          a(href=record.url) #{record.title}
+        dd
+          a(href=record.artist.url) #{record.artist.name}
+
+      else
+        p This label has no records
