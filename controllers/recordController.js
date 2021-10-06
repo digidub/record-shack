@@ -27,7 +27,7 @@ exports.index = function (req, res) {
 };
 
 exports.record_list = function (req, res, next) {
-  Record.find({}, 'title artist genre label')
+  Record.find({}, 'title artist genre label year')
     .sort({ title: 1 })
     .populate('artist genre label')
     .exec(function (err, list_records) {
