@@ -6,18 +6,11 @@ console.log(
   'This script populates some test records, artists, genres and bookinstances to your database. Specified database as argument - e.g.: populatedb mongodb+srv://cooluser:coolpassword@cluster0.a9azn.mongodb.net/local_library?retryWrites=true'
 );
 
-// Get arguments passed on command line
-var userArgs = process.argv.slice(2);
-/*
-if (!userArgs[0].startsWith('mongodb')) {
-    console.log('ERROR: You need to specify a valid mongodb URL as the first argument');
-    return
-}
-*/
 var async = require('async');
 var Record = require('./models/record');
 var Artist = require('./models/artist');
 var Genre = require('./models/genre');
+var Label = require('./models/label');
 
 var mongoose = require('mongoose');
 var mongoDB = process.env.MONGODB_URI;
@@ -29,7 +22,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 var artists = [];
 var genres = [];
 var records = [];
-var bookinstances = [];
+var labels = [];
 
 function artistCreate(name, cb) {
   artistdetail = { name };
@@ -61,6 +54,22 @@ function genreCreate(name, cb) {
   });
 }
 
+function labelCreate(name, cb) {
+  labeldetail = { name };
+
+  var label = new Label(labeldetail);
+
+  label.save(function (err) {
+    if (err) {
+      cb(err, null);
+      return;
+    }
+    console.log('New label: ' + label);
+    labels.push(label);
+    cb(null, label);
+  });
+}
+
 function recordCreate(title, artist, year, condition, genre, label, quantity, cb) {
   recorddetail = {
     title: title,
@@ -85,7 +94,7 @@ function recordCreate(title, artist, year, condition, genre, label, quantity, cb
   });
 }
 
-function createGenreArtists(cb) {
+function createGenresLabelsArtists(cb) {
   async.series(
     [
       function (callback) {
@@ -112,6 +121,21 @@ function createGenreArtists(cb) {
       function (callback) {
         genreCreate('Soul', callback);
       },
+      function (callback) {
+        labelCreate('Yam Euphony Music', callback);
+      },
+      function (callback) {
+        labelCreate('Marle', callback);
+      },
+      function (callback) {
+        labelCreate('Time 1 Records', callback);
+      },
+      function (callback) {
+        labelCreate('Not On Label', callback);
+      },
+      function (callback) {
+        labelCreate('Random Label', callback);
+      },
     ],
     // optional callback
     cb
@@ -122,19 +146,19 @@ function createRecords(cb) {
   async.parallel(
     [
       function (callback) {
-        recordCreate('Love Conquers All', artists[1], 2001, 'VG+', [genres[0]], 'Yam Euphony Music', 3, callback);
+        recordCreate('Love Conquers All', artists[1], 2001, 'VG+', genres[0], labels[0], 3, callback);
       },
       function (callback) {
-        recordCreate('Lady', artists[0], 1983, 'NM', [genres[0]], 'Marle', 1, callback);
+        recordCreate('Lady', artists[0], 1983, 'NM', genres[0], labels[1], 1, callback);
       },
       function (callback) {
-        recordCreate('Lipstick / The Vibe Is Right', artists[2], 1988, 'G+', [genres[0]], 'Time 1 Records', 2, callback);
+        recordCreate('Lipstick / The Vibe Is Right', artists[2], 1988, 'G+', genres[0], labels[2], 2, callback);
       },
       function (callback) {
-        recordCreate('Untitled Jazz LP', artists[3], 1969, 'NM', [genres[1]], 'Not On Label', 1, callback);
+        recordCreate('Untitled Jazz LP', artists[3], 1969, 'NM', genres[1], labels[3], 1, callback);
       },
       function (callback) {
-        recordCreate("Tell me It's True", artists[4], 1990, 'VG', [genres[2]], 'Random Label', 0, callback);
+        recordCreate("Tell me It's True", artists[4], 1990, 'VG', genres[2], labels[4], 0, callback);
       },
     ],
     // optional callback
@@ -143,7 +167,7 @@ function createRecords(cb) {
 }
 
 async.series(
-  [createGenreArtists, createRecords],
+  [createGenresLabelsArtists, createRecords],
   // Optional callback
   function (err, results) {
     if (err) {
