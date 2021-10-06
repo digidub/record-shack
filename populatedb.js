@@ -61,12 +61,15 @@ function genreCreate(name, cb) {
   });
 }
 
-function recordCreate(title, condition, artist, genre, cb) {
+function recordCreate(title, artist, year, condition, genre, label, quantity, cb) {
   recorddetail = {
     title: title,
-    condition: condition,
     artist: artist,
+    year: year,
+    condition: condition,
     genre: genre,
+    label: label,
+    quantity: quantity,
   };
   if (genre != false) recorddetail.genre = genre;
 
@@ -119,19 +122,19 @@ function createRecords(cb) {
   async.parallel(
     [
       function (callback) {
-        recordCreate('Love Conquers All', 'VG+', artists[1], [genres[0]], callback);
+        recordCreate('Love Conquers All', artists[1], 2001, 'VG+', [genres[0]], 'Yam Euphony Music', 3, callback);
       },
       function (callback) {
-        recordCreate('Lady', 'NM', artists[0], [genres[0]], callback);
+        recordCreate('Lady', artists[0], 1983, 'NM', [genres[0]], 'Marle', 1, callback);
       },
       function (callback) {
-        recordCreate('Lipstick / The Vibe Is Right', 'G+', artists[2], [genres[0]], callback);
+        recordCreate('Lipstick / The Vibe Is Right', artists[2], 1988, 'G+', [genres[0]], 'Time 1 Records', 2, callback);
       },
       function (callback) {
-        recordCreate('Untitled Jazz LP', 'NM', artists[3], [genres[1]], callback);
+        recordCreate('Untitled Jazz LP', artists[3], 1969, 'NM', [genres[1]], 'Not On Label', 1, callback);
       },
       function (callback) {
-        recordCreate("Tell me It's True", 'VG', artists[4], [genres[2]], callback);
+        recordCreate("Tell me It's True", artists[4], 1990, 'VG', [genres[2]], 'Random Label', 0, callback);
       },
     ],
     // optional callback
