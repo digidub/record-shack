@@ -8,7 +8,7 @@ var RecordSchema = new Schema({
   condition: { type: String, enum: ['NM', 'VG+', 'VG', 'G+'], required: true },
   genre: { type: Schema.Types.ObjectId, ref: 'Genre', required: true },
   label: { type: Schema.Types.ObjectId, ref: 'Label', requried: true },
-  quantity: { type: Number, min: 1, required: true },
+  quantity: { type: Number, min: 0, required: true },
 });
 
 RecordSchema.virtual('url').get(function () {
