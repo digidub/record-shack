@@ -33,7 +33,6 @@ exports.genre_detail = function (req, res, next) {
         err.status = 404;
         return next(err);
       }
-      console.log(results);
       res.render('genre_detail', {
         title: 'Genre Detail',
         genre: results.genre,

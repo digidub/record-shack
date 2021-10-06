@@ -47,7 +47,6 @@ exports.record_detail = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      console.log(results);
       if (results == null) {
         var err = new Error('record not found');
         err.status = 404;
