@@ -8,6 +8,7 @@ var RecordSchema = new Schema({
   condition: { type: String, enum: ['NM', 'VG+', 'VG', 'G+'], required: true },
   genre: [{ type: Schema.Types.ObjectId, ref: 'Genre', required: true }],
   label: { type: Schema.Types.ObjectId, ref: 'Label', requried: true },
+  format: { type: Schema.Types.ObjectId, ref: 'Format', enum: ['12"', '7"', 'LP'], requried: true },
   quantity: { type: Number, min: 0, required: true },
 });
 
