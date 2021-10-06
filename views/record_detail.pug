@@ -8,7 +8,10 @@ block content
   p #[strong Label:] 
     a(href=record.label.url) #{record.label.name}
   p #[strong Genre:] 
-    a(href=record.genre.url) #{record.genre.name}
+    each val, index in record.genre
+      a(href=val.url) #{val.name}
+      if index < record.genre.length - 1
+        |,
 
     p #[strong Stock:]
     if(record.quantity > 0)
