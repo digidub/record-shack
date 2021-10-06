@@ -1,5 +1,6 @@
 var Genre = require('../models/genre');
 var Record = require('../models/record');
+var Artist = require('../models/artist');
 var async = require('async');
 
 exports.genre_list = function (req, res, next) {
@@ -20,7 +21,10 @@ exports.genre_detail = function (req, res, next) {
         Genre.findById(req.params.id).exec(callback);
       },
       genre_records: function (callback) {
-        Record.find({ genre: req.params.id }).exec(callback);
+        Record.find({ genre: req.params.id }).populate('artist genre label').exec(callback);
+      },
+      genre_artists: function (callback) {
+        Artist.find({ genre: req.params.id }).exec(callback);
       },
     },
     function (err, results) {
@@ -33,7 +37,12 @@ exports.genre_detail = function (req, res, next) {
         return next(err);
       }
       console.log(results);
-      res.render('genre_detail', { title: 'Genre Detail', genre: results.genre, genre_records: results.genre_records });
+      res.render('genre_detail', {
+        title: 'Genre Detail',
+        genre: results.genre,
+        genre_records: results.genre_records,
+        genre_artists: results.genre_artists,
+      });
     }
   );
 };
