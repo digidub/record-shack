@@ -9,6 +9,10 @@ block content
                 a(href=record.url) #{record.title} 
                 | - 
                 a(href=record.artist.url) #{record.artist.name}
+                | - 
+                a(href=record.genre.url) #{record.genre.name}
+                | - 
+                a(href=record.label.url) #{record.label.name}
 
         else
             li There are no books.
