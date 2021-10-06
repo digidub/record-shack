@@ -6,7 +6,7 @@ var LabelSchema = new Schema({
 });
 
 LabelSchema.virtual('url').get(function () {
-  return 'catalog/label/' + this._id;
+  return '/catalog/label/' + this._id;
 });
 
 module.exports = mongoose.model('Label', LabelSchema);
