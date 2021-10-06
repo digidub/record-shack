@@ -12,7 +12,8 @@ block content
       each record in genre_records
         dt
           a(href=record.url) #{record.title}
-        dd #{record.summary}
+        dd
+          a(href=record.artist.url) #{record.artist.name}
 
       else
         p This genre has no records
