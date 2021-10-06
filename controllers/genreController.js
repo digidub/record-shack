@@ -23,9 +23,6 @@ exports.genre_detail = function (req, res, next) {
       genre_records: function (callback) {
         Record.find({ genre: req.params.id }).populate('artist genre label').exec(callback);
       },
-      genre_artists: function (callback) {
-        Artist.find({ genre: req.params.id }).exec(callback);
-      },
     },
     function (err, results) {
       if (err) {
@@ -41,7 +38,6 @@ exports.genre_detail = function (req, res, next) {
         title: 'Genre Detail',
         genre: results.genre,
         genre_records: results.genre_records,
-        genre_artists: results.genre_artists,
       });
     }
   );
