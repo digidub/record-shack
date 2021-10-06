@@ -4,6 +4,7 @@ var router = express.Router();
 var record_controller = require('../controllers/recordController');
 var artist_controller = require('../controllers/artistController');
 var genre_controller = require('../controllers/genreController');
+var label_controller = require('../controllers/labelController');
 
 router.get('/', record_controller.index);
 // router.get('/record/create', record_controller.record_create_get);
@@ -31,7 +32,7 @@ router.get('/artists', artist_controller.artist_list);
 // router.get('/label/:id/update', label_controller.label_update_get);
 // router.post('/label/:id/update', label_controller.label_update_post);
 // router.get('/label/:id', label_controller.label_detail);
-// router.get('/labels', label_controller.label_list);
+router.get('/labels', label_controller.label_list);
 
 // router.get('/genre/create', genre_controller.genre_create_get);
 // router.post('/genre/create', genre_controller.genre_create_post);
