@@ -6,8 +6,9 @@ block content
     ul
         each record in record_list
             li
-                a(href=record.url) #{record.title}
-                |   (#{record.artist.name})
+                a(href=record.url) #{record.title} 
+                | - 
+                a(href=record.artist.url) #{record.artist.name}
 
         else
             li There are no books.
