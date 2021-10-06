@@ -22,7 +22,7 @@ router.get('/records', record_controller.record_list);
 // router.get('/artist/:id/update', artist_controller.artist_update_get);
 // router.post('/artist/:id/update', artist_controller.artist_update_post);
 // router.get('/artist/:id', artist_controller.artist_detail);
-// router.get('/artists', artist_controller.artist_list);
+router.get('/artists', artist_controller.artist_list);
 
 // router.get('/genre/create', genre_controller.genre_create_get);
 // router.post('/genre/create', genre_controller.genre_create_post);
