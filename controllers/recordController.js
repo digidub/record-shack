@@ -39,22 +39,20 @@ exports.record_list = function (req, res, next) {
 };
 
 exports.record_detail = function (req, res, next) {
-  async.parallel(
-    {
-      record: function (callback) {
-        Record.findById(req.params.id).populate('artist').populate('genre').populate('label').exec(callback);
-      },
-    },
-    function (err, results) {
+  Record.findById(req.params.id)
+    .populate('artist')
+    .populate('genre')
+    .populate('label')
+    .exec(function (err, results) {
       if (err) {
         return next(err);
       }
-      if (results.record == null) {
+      console.log(results);
+      if (results == null) {
         var err = new Error('record not found');
         err.status = 404;
         return next(err);
       }
-      res.render('record_detail', { title: results.record.title, record: results.record, record_instances: results.record_instance });
-    }
-  );
+      res.render('record_detail', { title: results.title, record: results });
+    });
 };
