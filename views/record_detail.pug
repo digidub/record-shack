@@ -9,3 +9,9 @@ block content
     a(href=record.label.url) #{record.label.name}
   p #[strong Genre:] 
     a(href=record.genre.url) #{record.genre.name}
+
+    p #[strong Stock:]
+    if(record.quantity > 0)
+        | #{record.quantity} in stock 
+    else 
+        p Out of stock.
