@@ -34,7 +34,27 @@ exports.record_list = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      console.log(list_records);
       res.render('record_list', { title: 'Record Stock', record_list: list_records });
     });
+};
+
+exports.record_detail = function (req, res, next) {
+  async.parallel(
+    {
+      record: function (callback) {
+        Record.findById(req.params.id).populate('artist').populate('genre').populate('label').exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) {
+        return next(err);
+      }
+      if (results.record == null) {
+        var err = new Error('record not found');
+        err.status = 404;
+        return next(err);
+      }
+      res.render('record_detail', { title: results.record.title, record: results.record, record_instances: results.record_instance });
+    }
+  );
 };
