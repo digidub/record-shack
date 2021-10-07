@@ -11,7 +11,7 @@ block content
     each val, index in record.genre
       a(href=val.url) #{val.name}
       if index < record.genre.length - 1
-        |,
+        | , 
 
     p #[strong Stock:]
     if(record.quantity > 0)
