@@ -11,6 +11,7 @@ var Record = require('./models/record');
 var Artist = require('./models/artist');
 var Genre = require('./models/genre');
 var Label = require('./models/label');
+var Format = require('./models/format');
 
 var mongoose = require('mongoose');
 var mongoDB = process.env.MONGODB_URI;
@@ -23,6 +24,7 @@ var artists = [];
 var genres = [];
 var records = [];
 var labels = [];
+var formats = [];
 
 function artistCreate(name, cb) {
   artistdetail = { name };
@@ -70,7 +72,23 @@ function labelCreate(name, cb) {
   });
 }
 
-function recordCreate(title, artist, year, condition, genre, label, quantity, cb) {
+function formatCreate(name, cb) {
+  formatdetail = { name };
+
+  var format = new Format(formatdetail);
+
+  format.save(function (err) {
+    if (err) {
+      cb(err, null);
+      return;
+    }
+    console.log('New format: ' + format);
+    formats.push(format);
+    cb(null, format);
+  });
+}
+
+function recordCreate(title, artist, year, condition, genre, label, format, quantity, cb) {
   recorddetail = {
     title: title,
     artist: artist,
@@ -78,6 +96,7 @@ function recordCreate(title, artist, year, condition, genre, label, quantity, cb
     condition: condition,
     genre: genre,
     label: label,
+    format: format,
     quantity: quantity,
   };
   if (genre != false) recorddetail.genre = genre;
@@ -94,7 +113,7 @@ function recordCreate(title, artist, year, condition, genre, label, quantity, cb
   });
 }
 
-function createGenresLabelsArtists(cb) {
+function createGenresLabelsArtistsFormats(cb) {
   async.series(
     [
       function (callback) {
@@ -136,6 +155,15 @@ function createGenresLabelsArtists(cb) {
       function (callback) {
         labelCreate('Random Label', callback);
       },
+      function (callback) {
+        formatCreate('7"', callback);
+      },
+      function (callback) {
+        formatCreate('12"', callback);
+      },
+      function (callback) {
+        formatCreate('LP', callback);
+      },
     ],
     // optional callback
     cb
@@ -146,19 +174,22 @@ function createRecords(cb) {
   async.parallel(
     [
       function (callback) {
-        recordCreate('Love Conquers All', artists[1], 2001, 'VG+', genres[0], labels[0], 3, callback);
+        recordCreate('Love Conquers All', artists[1], 2001, 'VG+', [genres[0]], labels[0], formats[1], 3, callback);
       },
       function (callback) {
-        recordCreate('Lady', artists[0], 1983, 'NM', genres[0], labels[1], 1, callback);
+        recordCreate('Lady', artists[0], 1983, 'NM', [genres[0]], labels[1], formats[1], 1, callback);
       },
       function (callback) {
-        recordCreate('Lipstick / The Vibe Is Right', artists[2], 1988, 'G+', genres[0], labels[2], 2, callback);
+        recordCreate('Lady', artists[0], 1983, 'NM', [genres[0]], labels[1], formats[0], 1, callback);
       },
       function (callback) {
-        recordCreate('Untitled Jazz LP', artists[3], 1969, 'NM', genres[1], labels[3], 1, callback);
+        recordCreate('Lipstick / The Vibe Is Right', artists[2], 1988, 'G+', [genres[0], genres[2]], labels[2], formats[1], 2, callback);
       },
       function (callback) {
-        recordCreate("Tell me It's True", artists[4], 1990, 'VG', genres[2], labels[4], 0, callback);
+        recordCreate('Untitled Jazz LP', artists[3], 1969, 'NM', [genres[1]], labels[3], formats[2], 1, callback);
+      },
+      function (callback) {
+        recordCreate("Tell me It's True", artists[4], 1990, 'VG', [genres[2]], labels[4], formats[1], 0, callback);
       },
     ],
     // optional callback
@@ -167,7 +198,7 @@ function createRecords(cb) {
 }
 
 async.series(
-  [createGenresLabelsArtists, createRecords],
+  [createGenresLabelsArtistsFormats, createRecords],
   // Optional callback
   function (err, results) {
     if (err) {

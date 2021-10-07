@@ -2,6 +2,7 @@ var Record = require('../models/record');
 var Artist = require('../models/artist');
 var Genre = require('../models/genre');
 var Label = require('../models/label');
+var Format = require('../models/format');
 var async = require('async');
 const { body, validationResult } = require('express-validator');
 
@@ -63,8 +64,8 @@ exports.record_create_get = function (req, res, next) {
       genres: function (callback) {
         Genre.find(callback);
       },
-      labels: function (callback) {
-        Label.find(callback);
+      formats: function (callback) {
+        Format.find(callback);
       },
     },
     function (err, results) {
@@ -72,21 +73,29 @@ exports.record_create_get = function (req, res, next) {
         return next(err);
       }
       console.log(results);
-      res.render('record_form', { title: 'Add new record to database', genres: results.genres, labels: results.labels });
+      res.render('record_form', { title: 'Add new record to database', genres: results.genres, formats: results.formats });
     }
   );
 };
 
 exports.record_create_post = [
-  body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape(),
-  body('artist', 'artist must not be empty.').trim().isLength({ min: 1 }).escape(),
-  body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
-  body('genre', 'Genre must not be empty').trim().isLength({ min: 1 }).escape(),
-  body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
-  // body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
-  // body('quantity', 'Quantity must not be empty').trim().isLength({ min: 1 }).escape(),
-
   (req, res, next) => {
+    if (!(req.body.genre instanceof Array)) {
+      if (typeof req.body.genre === 'undefined') req.body.genre = [];
+      else req.body.genre = new Array(req.body.genre);
+    }
+    next();
+  },
+
+  body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('artist', 'Artist must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('quantity', 'Quantity must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('genre.*').escape(),
+
+  async (req, res, next) => {
     const errors = validationResult(req);
 
     var record = new Record({
@@ -126,109 +135,27 @@ exports.record_create_post = [
       );
       return;
     } else {
-      async.series(
-        [
-          function lookupArtist(callback) {
-            Artist.findOne({ name: req.body.artist }, function (err, results, next) {
-              if (err) {
-                console.error(err);
-                return next(err);
-              } else {
-                console.log(results);
-                if (results !== null) {
-                  (record.artist = results._id), console.log(record);
-                } else {
-                  // create new artist
-                }
-              }
-            });
-          },
-          function lookupLabel(callback) {
-            Label.findOne({ name: req.body.label }, function (err, results, next) {
-              if (err) {
-                console.error(err);
-                return next(err);
-              } else {
-                console.log(results);
-                if (results !== null) {
-                  record.label = results._id;
-                } else {
-                  // create new label
-                }
-              }
-            });
-          },
-        ],
-        function (err, results, next) {
-          if (err) {
-            console.error(err);
-            return next(err);
-          } else {
-            console.log(results);
-            console.log(results.artist.id);
-            record = { ...data, artist: results.artist.id };
-            res.redirect(record.url);
-          }
-        }
-      );
+      let artist;
+      let label;
+
+      const findArtist = await Artist.findOne({ name: req.body.artist });
+      if (findArtist === null) {
+        artist = new Artist({ name: req.body.artist });
+        record.artist = artist._id;
+      } else {
+        record.artist = findArtist._id;
+      }
+      const findLabel = await Label.findOne({ name: req.body.artist });
+      if (findLabel === null) {
+        label = new Label({ name: req.body.label });
+        record.label = label._id;
+      } else {
+        record.label = findLabel._id;
+      }
+      if (!findArtist) await artist.save();
+      if (!findLabel) await label.save();
+      const newRecord = await record.save();
+      res.redirect(record.url);
     }
   },
 ];
-
-// {
-//   artist: function (callback) {
-//     Artist.findOne({ name: req.body.artist }, callback);
-//   },
-//   label: function (callback) {
-//     Label.findOne({ name: req.body.label });
-//   },
-//   genre: function (callback) {
-//     Label.findOne({ name: req.body.genre });
-//   },
-// },
-//   function (err, results) {
-//     if (err) {
-//       console.log(err);
-//       return next(err);
-//     }
-//     console.log(results.artist);
-//     console.log(results.label);
-//     console.log(results.genre);
-//   }
-// );
-// record.save(function (err) {
-//   if (err) {
-//     return next(err);
-//   }
-//   //successful - redirect to new record record.
-//   res.redirect(record.url);
-// });
-// }
-// res.redirect('/catalog/');
-
-// function (err, results) {
-//   if (results) {
-//     console.log('artist found');
-//     console.log(results);
-//     // callback('Email already exists');
-//   } else {
-//     console.log('artist not found');
-//     console.log(req.body.artist);
-//     callback();
-//   }
-// }
-
-// , function (err, results) {
-//   if (results) {
-//     console.log(results);
-//     // callback('Email already exists');
-//   } else {
-//     callback();
-//   }
-// }
-
-// artist: '615da44f2241bfc76e7f1ad0',
-//   label: 'Time 1 Records',
-//   condition: 'VG+',
-//   genre: '615da44f2241bfc76e7f1ad6'
-// }
