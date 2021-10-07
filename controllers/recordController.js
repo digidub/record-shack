@@ -79,7 +79,7 @@ exports.record_create_get = function (req, res, next) {
 
 exports.record_create_post = [
   body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape(),
-  body('artist', 'artist must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('artist', 'Artist must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('genre', 'Genre must not be empty').trim().isLength({ min: 1 }).escape(),
   body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
@@ -98,6 +98,7 @@ exports.record_create_post = [
       format: req.body.format,
       genre: req.body.genre,
     });
+    console.log(record);
 
     if (!errors.isEmpty()) {
       async.parallel(
@@ -125,14 +126,37 @@ exports.record_create_post = [
       );
       return;
     } else {
+      let artist;
+      let label;
+
       const findArtist = await Artist.findOne({ name: req.body.artist });
       if (findArtist === null) {
         console.log('artist not found');
-        var artist = new Artist({ name: req.body.artist });
+        artist = new Artist({ name: req.body.artist });
         console.log(artist._id);
         record.artist = artist._id;
-        callback(artist);
+        console.log(record);
+      } else {
+        console.log('artist found');
+        record.artist = findArtist._id;
+        console.log(record);
       }
+      const findLabel = await Label.findOne({ name: req.body.artist });
+      if (findLabel === null) {
+        console.log('label not found');
+        label = new Label({ name: req.body.label });
+        console.log(label._id);
+        record.label = label._id;
+        console.log(record);
+      } else {
+        console.log('label found');
+        record.label = findLabel._id;
+        console.log(record);
+      }
+      if (!findArtist) await artist.save();
+      if (!findLabel) await label.save();
+      const newRecord = await record.save();
+      res.redirect(record.url);
 
       // async.series(
       //   {
