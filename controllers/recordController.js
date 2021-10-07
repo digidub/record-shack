@@ -58,7 +58,6 @@ exports.record_detail = function (req, res, next) {
 };
 
 exports.record_create_get = function (req, res, next) {
-  // Get all artists and genres, which we can use for adding to our record.
   async.parallel(
     {
       genres: function (callback) {
@@ -73,7 +72,7 @@ exports.record_create_get = function (req, res, next) {
         return next(err);
       }
       console.log(results);
-      res.render('record_form', { title: 'Create record', genres: results.genres, labels: results.labels });
+      res.render('record_form', { title: 'Add new record to database', genres: results.genres, labels: results.labels });
     }
   );
 };
@@ -99,14 +98,11 @@ exports.record_create_post = [
       format: req.body.format,
       genre: req.body.genre,
     });
-    console.log(req.body);
+    console.log(record);
 
     if (!errors.isEmpty()) {
       async.parallel(
         {
-          artists: function (callback) {
-            Artist.find(callback);
-          },
           genres: function (callback) {
             Genre.find(callback);
           },
@@ -122,7 +118,6 @@ exports.record_create_post = [
           }
           res.render('record_form', {
             title: 'Create record',
-            artists: results.artists,
             genres: results.genres,
             record: record,
             errors: errors.array(),
@@ -131,28 +126,35 @@ exports.record_create_post = [
       );
       return;
     } else {
-      async.parallel(
+      async.series(
         [
           function lookupArtist(callback) {
-            Artist.findOne({ name: req.body.artist }, function (err, results) {
-              if (results) {
-                console.log('artist found');
-                console.log(results);
-                // callback('Email already exists');
+            Artist.findOne({ name: req.body.artist }, function (err, results, next) {
+              if (err) {
+                console.error(err);
+                return next(err);
               } else {
-                console.log('artist not found');
-                console.log(req.body.artist);
-                callback();
+                console.log(results);
+                if (results !== null) {
+                  (record.artist = results._id), console.log(record);
+                } else {
+                  // create new artist
+                }
               }
             });
           },
           function lookupLabel(callback) {
-            Label.findOne({ name: req.body.label }, function (err, results) {
-              if (results) {
-                console.log(results);
-                // callback('Email already exists');
+            Label.findOne({ name: req.body.label }, function (err, results, next) {
+              if (err) {
+                console.error(err);
+                return next(err);
               } else {
-                callback();
+                console.log(results);
+                if (results !== null) {
+                  record.label = results._id;
+                } else {
+                  // create new label
+                }
               }
             });
           },
@@ -163,6 +165,8 @@ exports.record_create_post = [
             return next(err);
           } else {
             console.log(results);
+            console.log(results.artist.id);
+            record = { ...data, artist: results.artist.id };
             res.redirect(record.url);
           }
         }
@@ -201,3 +205,30 @@ exports.record_create_post = [
 // });
 // }
 // res.redirect('/catalog/');
+
+// function (err, results) {
+//   if (results) {
+//     console.log('artist found');
+//     console.log(results);
+//     // callback('Email already exists');
+//   } else {
+//     console.log('artist not found');
+//     console.log(req.body.artist);
+//     callback();
+//   }
+// }
+
+// , function (err, results) {
+//   if (results) {
+//     console.log(results);
+//     // callback('Email already exists');
+//   } else {
+//     callback();
+//   }
+// }
+
+// artist: '615da44f2241bfc76e7f1ad0',
+//   label: 'Time 1 Records',
+//   condition: 'VG+',
+//   genre: '615da44f2241bfc76e7f1ad6'
+// }
