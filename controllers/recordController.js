@@ -86,7 +86,7 @@ exports.record_create_post = [
   // body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
   // body('quantity', 'Quantity must not be empty').trim().isLength({ min: 1 }).escape(),
 
-  (req, res, next) => {
+  async (req, res, next) => {
     const errors = validationResult(req);
 
     var record = new Record({
@@ -98,7 +98,6 @@ exports.record_create_post = [
       format: req.body.format,
       genre: req.body.genre,
     });
-    console.log(record);
 
     if (!errors.isEmpty()) {
       async.parallel(
@@ -126,51 +125,79 @@ exports.record_create_post = [
       );
       return;
     } else {
-      async.series(
-        [
-          function lookupArtist(callback) {
-            Artist.findOne({ name: req.body.artist }, function (err, results, next) {
-              if (err) {
-                console.error(err);
-                return next(err);
-              } else {
-                console.log(results);
-                if (results !== null) {
-                  (record.artist = results._id), console.log(record);
-                } else {
-                  // create new artist
-                }
-              }
-            });
-          },
-          function lookupLabel(callback) {
-            Label.findOne({ name: req.body.label }, function (err, results, next) {
-              if (err) {
-                console.error(err);
-                return next(err);
-              } else {
-                console.log(results);
-                if (results !== null) {
-                  record.label = results._id;
-                } else {
-                  // create new label
-                }
-              }
-            });
-          },
-        ],
-        function (err, results, next) {
-          if (err) {
-            console.error(err);
-            return next(err);
-          } else {
-            console.log(results);
-            console.log(results.artist.id);
-            record = { ...data, artist: results.artist.id };
-            res.redirect(record.url);
-          }
-        }
-      );
+      const findArtist = await Artist.findOne({ name: req.body.artist });
+      if (findArtist === null) {
+        console.log('artist not found');
+        var artist = new Artist({ name: req.body.artist });
+        console.log(artist._id);
+        record.artist = artist._id;
+        callback(artist);
+      }
+
+      // async.series(
+      //   {
+      //     artist: function lookupArtist(callback) {
+      //       Artist.findOne({ name: req.body.artist }, function (err, results, next) {
+      //         if (err) {
+      //           console.error(err);
+      //           return next(err);
+      //         } else {
+      //           console.log(results);
+      //           if (results !== null) {
+      //             console.log('artist found');
+      //             record.artist = results._id;
+      //             callback();
+      //           } else {
+      //             console.log('artist not found');
+      //             var artist = new Artist({ name: req.body.artist });
+      //             console.log(artist._id);
+      //             record.artist = artist._id;
+      //             callback(artist);
+      //           }
+      //         }
+      //       });
+      //     },
+      //     label: function lookupLabel(callback) {
+      //       Label.findOne({ name: req.body.label }, function (err, results, next) {
+      //         if (err) {
+      //           console.error(err);
+      //           return next(err);
+      //         } else {
+      //           console.log(results);
+      //           if (results !== null) {
+      //             console.log('label found');
+      //             record.label = results._id;
+      //             callback(record);
+      //           } else {
+      //             console.log('label not found');
+      //             var label = new Label({ name: req.body.label });
+      //             record.label = label._id;
+      //             console.log(record.label);
+      //             callback(label);
+      //           }
+      //         }
+      //       });
+      //     },
+      //   },
+      //   function (err, results, next) {
+      //     if (err) {
+      //       console.error(err);
+      //       return next(err);
+      //     } else {
+      //       console.log(results);
+      //       console.log(record);
+      //       if (results.artist) results.artist.save();
+      //       if (results.label) results.label.save();
+      //       record.save(function (err) {
+      //         if (err) {
+      //           console.error(err);
+      //           return next(err);
+      //         }
+      //         res.redirect(record.url);
+      //       });
+      //     }
+      //   }
+      // );
     }
   },
 ];
