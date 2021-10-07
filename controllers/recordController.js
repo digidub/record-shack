@@ -140,27 +140,17 @@ exports.record_create_post = [
 
       const findArtist = await Artist.findOne({ name: req.body.artist });
       if (findArtist === null) {
-        console.log('artist not found');
         artist = new Artist({ name: req.body.artist });
-        console.log(artist._id);
         record.artist = artist._id;
-        console.log(record);
       } else {
-        console.log('artist found');
         record.artist = findArtist._id;
-        console.log(record);
       }
       const findLabel = await Label.findOne({ name: req.body.artist });
       if (findLabel === null) {
-        console.log('label not found');
         label = new Label({ name: req.body.label });
-        console.log(label._id);
         record.label = label._id;
-        console.log(record);
       } else {
-        console.log('label found');
         record.label = findLabel._id;
-        console.log(record);
       }
       if (!findArtist) await artist.save();
       if (!findLabel) await label.save();
