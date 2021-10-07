@@ -2,6 +2,7 @@ var Record = require('../models/record');
 var Artist = require('../models/artist');
 var Genre = require('../models/genre');
 var Label = require('../models/label');
+var Format = require('../models/format');
 var async = require('async');
 const { body, validationResult } = require('express-validator');
 
@@ -63,7 +64,7 @@ exports.record_create_get = function (req, res, next) {
       genres: function (callback) {
         Genre.find(callback);
       },
-      labels: function (callback) {
+      formats: function (callback) {
         Label.find(callback);
       },
     },
@@ -78,13 +79,21 @@ exports.record_create_get = function (req, res, next) {
 };
 
 exports.record_create_post = [
+  (req, res, next) => {
+    if (!(req.body.genre instanceof Array)) {
+      if (typeof req.body.genre === 'undefined') req.body.genre = [];
+      else req.body.genre = new Array(req.body.genre);
+    }
+    next();
+  },
+
   body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('artist', 'Artist must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
-  body('genre', 'Genre must not be empty').trim().isLength({ min: 1 }).escape(),
   body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
-  // body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
-  // body('quantity', 'Quantity must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('quantity', 'Quantity must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('genre.*').escape(),
 
   async (req, res, next) => {
     const errors = validationResult(req);
