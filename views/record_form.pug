@@ -9,15 +9,21 @@ block content
       input#title.form-control(type='text', placeholder='Name of record' name='title' required='true' value=(undefined===record ? '' : record.title) )
     div.form-group
       label(for='artist') Artist:
-      select#artist.form-control(type='select', placeholder='Select artist' name='artist' required='true' )
-        for artist in artists
-          if record
-            option(value=artist._id selected=(artist._id.toString()===record.artist._id.toString() ? 'selected' : false) ) #{artist.name}
-          else
-            option(value=artist._id) #{artist.name}
+      input#artist.form-control(type='text', placeholder='Artist Name' name='artist' required='true' value=(undefined===record ? '' : record.artist) )
     div.form-group
       label(for='label') Label:
-      textarea#label.form-control(type='textarea', placeholder='label' name='label' required='true') #{undefined===record ? '' : record.label}
+      input#label.form-control(type='text', placeholder='Label' name='label' required='true' value=(undefined===record ? '' : record.label))
+    div.form-group
+      label(for='format') Format:
+      select#format.form-control(type='select', placeholder='Select Format' name='format' required='true' value=(undefined===record ? '' : record.format))
+        for format in formats
+          if record
+            option(value=format._id selected=(format._id.toString()===record.format._id.toString() ? 'selected' : false) ) #{format.name}
+          else
+            option(value=format._id) #{format.name}
+    div.form-group
+      label(for='quantity') Quantity:
+      input#quantity.form-control(type='number', name='quantity' required='true' value=(undefined===record ? '1' : record.quantity))
     div.form-group
       label(for='condition') Condition:
       input#condition.form-control(type='text', placeholder='VG+' name='condition' value=(undefined===record ? '' : record.condition) required='true')
