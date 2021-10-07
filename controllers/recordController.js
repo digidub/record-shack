@@ -65,7 +65,7 @@ exports.record_create_get = function (req, res, next) {
         Genre.find(callback);
       },
       formats: function (callback) {
-        Label.find(callback);
+        Format.find(callback);
       },
     },
     function (err, results) {
@@ -73,7 +73,7 @@ exports.record_create_get = function (req, res, next) {
         return next(err);
       }
       console.log(results);
-      res.render('record_form', { title: 'Add new record to database', genres: results.genres, labels: results.labels });
+      res.render('record_form', { title: 'Add new record to database', genres: results.genres, formats: results.formats });
     }
   );
 };
