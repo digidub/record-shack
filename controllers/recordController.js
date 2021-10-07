@@ -3,6 +3,7 @@ var Artist = require('../models/artist');
 var Genre = require('../models/genre');
 var Label = require('../models/label');
 var async = require('async');
+const { body, validationResult } = require('express-validator');
 
 exports.index = function (req, res) {
   async.parallel(
@@ -55,3 +56,148 @@ exports.record_detail = function (req, res, next) {
       res.render('record_detail', { title: results.title, record: results });
     });
 };
+
+exports.record_create_get = function (req, res, next) {
+  // Get all artists and genres, which we can use for adding to our record.
+  async.parallel(
+    {
+      genres: function (callback) {
+        Genre.find(callback);
+      },
+      labels: function (callback) {
+        Label.find(callback);
+      },
+    },
+    function (err, results) {
+      if (err) {
+        return next(err);
+      }
+      console.log(results);
+      res.render('record_form', { title: 'Create record', genres: results.genres, labels: results.labels });
+    }
+  );
+};
+
+exports.record_create_post = [
+  body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('artist', 'artist must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('genre', 'Genre must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
+  // body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
+  // body('quantity', 'Quantity must not be empty').trim().isLength({ min: 1 }).escape(),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    var record = new Record({
+      title: req.body.title,
+      artist: req.body.artist,
+      label: req.body.label,
+      condition: req.body.condition,
+      quantity: req.body.quantity,
+      format: req.body.format,
+      genre: req.body.genre,
+    });
+    console.log(req.body);
+
+    if (!errors.isEmpty()) {
+      async.parallel(
+        {
+          artists: function (callback) {
+            Artist.find(callback);
+          },
+          genres: function (callback) {
+            Genre.find(callback);
+          },
+        },
+        function (err, results) {
+          if (err) {
+            return next(err);
+          }
+          for (let i = 0; i < results.genres.length; i++) {
+            if (record.genre.indexOf(results.genres[i]._id) > -1) {
+              results.genres[i].checked = 'true';
+            }
+          }
+          res.render('record_form', {
+            title: 'Create record',
+            artists: results.artists,
+            genres: results.genres,
+            record: record,
+            errors: errors.array(),
+          });
+        }
+      );
+      return;
+    } else {
+      async.parallel(
+        [
+          function lookupArtist(callback) {
+            Artist.findOne({ name: req.body.artist }, function (err, results) {
+              if (results) {
+                console.log('artist found');
+                console.log(results);
+                // callback('Email already exists');
+              } else {
+                console.log('artist not found');
+                console.log(req.body.artist);
+                callback();
+              }
+            });
+          },
+          function lookupLabel(callback) {
+            Label.findOne({ name: req.body.label }, function (err, results) {
+              if (results) {
+                console.log(results);
+                // callback('Email already exists');
+              } else {
+                callback();
+              }
+            });
+          },
+        ],
+        function (err, results, next) {
+          if (err) {
+            console.error(err);
+            return next(err);
+          } else {
+            console.log(results);
+            res.redirect(record.url);
+          }
+        }
+      );
+    }
+  },
+];
+
+// {
+//   artist: function (callback) {
+//     Artist.findOne({ name: req.body.artist }, callback);
+//   },
+//   label: function (callback) {
+//     Label.findOne({ name: req.body.label });
+//   },
+//   genre: function (callback) {
+//     Label.findOne({ name: req.body.genre });
+//   },
+// },
+//   function (err, results) {
+//     if (err) {
+//       console.log(err);
+//       return next(err);
+//     }
+//     console.log(results.artist);
+//     console.log(results.label);
+//     console.log(results.genre);
+//   }
+// );
+// record.save(function (err) {
+//   if (err) {
+//     return next(err);
+//   }
+//   //successful - redirect to new record record.
+//   res.redirect(record.url);
+// });
+// }
+// res.redirect('/catalog/');
