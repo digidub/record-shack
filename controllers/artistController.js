@@ -13,7 +13,11 @@ exports.artist_list = function (req, res, next) {
 };
 
 exports.artist_detail = async function (req, res, next) {
-  const artist = await Artist.findById(req.params.id);
-  const artistsRecords = await Record.find({ artist: req.params.id }, 'title summary');
-  res.render('artist_detail', { title: 'Artist Detail', artist, artist_records: artistsRecords });
+  try {
+    const artist = await Artist.findById(req.params.id);
+    const artistsRecords = await Record.find({ artist: req.params.id }, 'title summary');
+    res.render('artist_detail', { title: 'Artist Detail', artist, artist_records: artistsRecords });
+  } catch (err) {
+    console.error(err);
+  }
 };
