@@ -1,31 +1,20 @@
-var Record = require('../models/record');
-var Artist = require('../models/artist');
-var Genre = require('../models/genre');
-var Label = require('../models/label');
-var Format = require('../models/format');
-var async = require('async');
+const Record = require('../models/record');
+const Artist = require('../models/artist');
+const Genre = require('../models/genre');
+const Label = require('../models/label');
+const Format = require('../models/format');
 const { body, validationResult } = require('express-validator');
 
-exports.index = function (req, res) {
-  async.parallel(
-    {
-      record_count: function (callback) {
-        Record.countDocuments({}, callback);
-      },
-      artist_count: function (callback) {
-        Artist.countDocuments({}, callback);
-      },
-      genre_count: function (callback) {
-        Genre.countDocuments({}, callback);
-      },
-      label_count: function (callback) {
-        Label.countDocuments({}, callback);
-      },
-    },
-    function (err, results) {
-      res.render('index', { title: 'Record Shack - Home', error: err, data: results });
-    }
-  );
+exports.index = async function (req, res) {
+  const recordCount = async () => await Record.countDocuments({});
+  const artistCount = async () => await Artist.countDocuments({});
+  const labelCount = async () => await Label.countDocuments({});
+  const genreCount = async () => await Genre.countDocuments({});
+  const formatCount = async () => await Format.countDocuments({});
+
+  await Promise.all([recordCount(), artistCount(), genreCount(), labelCount(), formatCount()])
+    .then((data) => res.render('index', { title: 'Record Shack - Home', data }))
+    .catch(console.log);
 };
 
 exports.record_list = function (req, res, next) {
@@ -50,7 +39,7 @@ exports.record_detail = function (req, res, next) {
         return next(err);
       }
       if (results == null) {
-        var err = new Error('record not found');
+        let err = new Error('record not found');
         err.status = 404;
         return next(err);
       }
@@ -58,24 +47,13 @@ exports.record_detail = function (req, res, next) {
     });
 };
 
-exports.record_create_get = function (req, res, next) {
-  async.parallel(
-    {
-      genres: function (callback) {
-        Genre.find(callback);
-      },
-      formats: function (callback) {
-        Format.find(callback);
-      },
-    },
-    function (err, results) {
-      if (err) {
-        return next(err);
-      }
-      console.log(results);
-      res.render('record_form', { title: 'Add new record to database', genres: results.genres, formats: results.formats });
-    }
-  );
+exports.record_create_get = async function (req, res, next) {
+  const findGenres = async () => await Genre.find();
+  const findFormats = async () => await Format.find();
+
+  await Promise.all([findGenres(), findFormats()])
+    .then((data) => res.render('record_form', { title: 'Add new record to database', genres: data[0], formats: data[1] }))
+    .catch(console.log);
 };
 
 exports.record_create_post = [
@@ -92,13 +70,14 @@ exports.record_create_post = [
   body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
   body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
-  body('quantity', 'Quantity must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('quantity', 'Quantity must be positive').trim().isFloat({ min: 1 }).escape(),
   body('genre.*').escape(),
 
   async (req, res, next) => {
     const errors = validationResult(req);
+    console.log(errors.mapped());
 
-    var record = new Record({
+    const record = new Record({
       title: req.body.title,
       artist: req.body.artist,
       label: req.body.label,
@@ -107,33 +86,23 @@ exports.record_create_post = [
       format: req.body.format,
       genre: req.body.genre,
     });
-    console.log(record);
 
     if (!errors.isEmpty()) {
-      async.parallel(
-        {
-          genres: function (callback) {
-            Genre.find(callback);
-          },
-        },
-        function (err, results) {
-          if (err) {
-            return next(err);
-          }
-          for (let i = 0; i < results.genres.length; i++) {
-            if (record.genre.indexOf(results.genres[i]._id) > -1) {
-              results.genres[i].checked = 'true';
-            }
-          }
-          res.render('record_form', {
-            title: 'Create record',
-            genres: results.genres,
-            record: record,
-            errors: errors.array(),
-          });
+      let genres = await Genre.find();
+      let formats = await Format.find();
+      for (let i = 0; i < genres.length; i++) {
+        if (record.genre.indexOf(genres[i]._id) > -1) {
+          genres[i].checked = 'true';
         }
-      );
-      return;
+        await res.render('record_form', {
+          title: 'Create record',
+          genres: genres,
+          record: record,
+          errors: errors.array(),
+          formats: formats,
+        });
+        return;
+      }
     } else {
       let artist;
       let label;

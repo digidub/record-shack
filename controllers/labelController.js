@@ -1,6 +1,5 @@
 var Label = require('../models/label');
 var Record = require('../models/record');
-var async = require('async');
 
 exports.label_list = function (req, res, next) {
   Label.find()
@@ -13,26 +12,12 @@ exports.label_list = function (req, res, next) {
     });
 };
 
-exports.label_detail = function (req, res, next) {
-  async.parallel(
-    {
-      label: function (callback) {
-        Label.findById(req.params.id).exec(callback);
-      },
-      label_records: function (callback) {
-        Record.find({ label: req.params.id }).populate('artist genre label').exec(callback);
-      },
-    },
-    function (err, results) {
-      if (err) {
-        return next(err);
-      }
-      if (results.label == null) {
-        var err = new Error('Label not found');
-        err.status = 404;
-        return next(err);
-      }
-      res.render('label_detail', { title: 'Label Detail', label: results.label, label_records: results.label_records });
-    }
-  );
+exports.label_detail = async function (req, res, next) {
+  try {
+    const label = await Label.findById(req.params.id);
+    const labelsRecords = await Record.find({ label: req.params.id }).populate('artist label label');
+    res.render('label_detail', { title: 'Label Detail', label, label_records: labelsRecords });
+  } catch (err) {
+    console.error(err);
+  }
 };

@@ -22,11 +22,15 @@ block content
           else
             option(value=format._id) #{format.name}
     div.form-group
+      label(for='condition') Format:
+      select#condition.form-control(type='select', placeholder='Select Condition' name='condition' required='true' value=(undefined===record ? '' : record.condition))
+          option(value='NM') NM
+          option(value='VG+') VG+
+          option(value='VG') VG
+          option(value='G+') G+
+    div.form-group
       label(for='quantity') Quantity:
       input#quantity.form-control(type='number', name='quantity' required='true' value=(undefined===record ? '1' : record.quantity))
-    div.form-group
-      label(for='condition') Condition:
-      input#condition.form-control(type='text', placeholder='VG+' name='condition' value=(undefined===record ? '' : record.condition) required='true')
     div.form-group
       label Genre:
       div
