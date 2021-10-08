@@ -1,6 +1,5 @@
 var Format = require('../models/format');
 var Record = require('../models/record');
-var async = require('async');
 
 exports.format_list = function (req, res, next) {
   Format.find()
