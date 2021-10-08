@@ -5,10 +5,11 @@ var record_controller = require('../controllers/recordController');
 var artist_controller = require('../controllers/artistController');
 var genre_controller = require('../controllers/genreController');
 var label_controller = require('../controllers/labelController');
+var format_controller = require('../controllers/formatController');
 
 router.get('/', record_controller.index);
-// router.get('/record/create', record_controller.record_create_get);
-// router.post('/record/create', record_controller.record_create_post);
+router.get('/record/create', record_controller.record_create_get);
+router.post('/record/create', record_controller.record_create_post);
 // router.get('/record/:id/delete', record_controller.record_delete_get);
 // router.post('/record/:id/delete', record_controller.record_delete_post);
 // router.get('/record/:id/update', record_controller.record_update_get);
@@ -42,5 +43,14 @@ router.get('/labels', label_controller.label_list);
 // router.post('/genre/:id/update', genre_controller.genre_update_post);
 router.get('/genre/:id', genre_controller.genre_detail);
 router.get('/genres', genre_controller.genre_list);
+
+// router.get('/format/create', format_controller.format_create_get);
+// router.post('/format/create', format_controller.format_create_post);
+// router.get('/format/:id/delete', format_controller.format_delete_get);
+// router.post('/format/:id/delete', format_controller.format_delete_post);
+// router.get('/format/:id/update', format_controller.format_update_get);
+// router.post('/format/:id/update', format_controller.format_update_post);
+router.get('/format/:id', format_controller.format_detail);
+router.get('/formats', format_controller.format_list);
 
 module.exports = router;
