@@ -1,9 +1,8 @@
-var Record = require('../models/record');
-var Artist = require('../models/artist');
-var Genre = require('../models/genre');
-var Label = require('../models/label');
-var Format = require('../models/format');
-var async = require('async');
+const Record = require('../models/record');
+const Artist = require('../models/artist');
+const Genre = require('../models/genre');
+const Label = require('../models/label');
+const Format = require('../models/format');
 const { body, validationResult } = require('express-validator');
 
 exports.index = async function (req, res) {
@@ -76,8 +75,9 @@ exports.record_create_post = [
 
   async (req, res, next) => {
     const errors = validationResult(req);
+    console.log(errors.mapped());
 
-    var record = new Record({
+    const record = new Record({
       title: req.body.title,
       artist: req.body.artist,
       label: req.body.label,
@@ -86,33 +86,21 @@ exports.record_create_post = [
       format: req.body.format,
       genre: req.body.genre,
     });
-    console.log(record);
 
     if (!errors.isEmpty()) {
-      async.parallel(
-        {
-          genres: function (callback) {
-            Genre.find(callback);
-          },
-        },
-        function (err, results) {
-          if (err) {
-            return next(err);
-          }
-          for (let i = 0; i < results.genres.length; i++) {
-            if (record.genre.indexOf(results.genres[i]._id) > -1) {
-              results.genres[i].checked = 'true';
-            }
-          }
-          res.render('record_form', {
-            title: 'Create record',
-            genres: results.genres,
-            record: record,
-            errors: errors.array(),
-          });
+      let genres = await Genre.find();
+      for (let i = 0; i < genres.length; i++) {
+        if (record.genre.indexOf(genres[i]._id) > -1) {
+          genres[i].checked = 'true';
         }
-      );
-      return;
+        await res.render('record_form', {
+          title: 'Create record',
+          genres: genres,
+          record: record,
+          errors: errors.array(),
+        });
+        return;
+      }
     } else {
       let artist;
       let label;
