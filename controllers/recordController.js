@@ -6,26 +6,16 @@ var Format = require('../models/format');
 var async = require('async');
 const { body, validationResult } = require('express-validator');
 
-exports.index = function (req, res) {
-  async.parallel(
-    {
-      record_count: function (callback) {
-        Record.countDocuments({}, callback);
-      },
-      artist_count: function (callback) {
-        Artist.countDocuments({}, callback);
-      },
-      genre_count: function (callback) {
-        Genre.countDocuments({}, callback);
-      },
-      label_count: function (callback) {
-        Label.countDocuments({}, callback);
-      },
-    },
-    function (err, results) {
-      res.render('index', { title: 'Record Shack - Home', error: err, data: results });
-    }
-  );
+exports.index = async function (req, res) {
+  const recordCount = async () => await Record.countDocuments({});
+  const artistCount = async () => await Artist.countDocuments({});
+  const labelCount = async () => await Label.countDocuments({});
+  const genreCount = async () => await Genre.countDocuments({});
+  const formatCount = async () => await Format.countDocuments({});
+
+  await Promise.all([recordCount(), artistCount(), genreCount(), labelCount(), formatCount()])
+    .then((data) => res.render('index', { title: 'Record Shack - Home', data }))
+    .catch(console.log);
 };
 
 exports.record_list = function (req, res, next) {
