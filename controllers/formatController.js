@@ -13,26 +13,12 @@ exports.format_list = function (req, res, next) {
     });
 };
 
-exports.format_detail = function (req, res, next) {
-  async.parallel(
-    {
-      format: function (callback) {
-        Format.findById(req.params.id).exec(callback);
-      },
-      format_records: function (callback) {
-        Record.find({ format: req.params.id }).populate('artist genre format').exec(callback);
-      },
-    },
-    function (err, results) {
-      if (err) {
-        return next(err);
-      }
-      if (results.format == null) {
-        var err = new Error('Format not found');
-        err.status = 404;
-        return next(err);
-      }
-      res.render('format_detail', { title: 'Format Detail', format: results.format, format_records: results.format_records });
-    }
-  );
+exports.format_detail = async function (req, res, next) {
+  try {
+    const format = await Format.findById(req.params.id);
+    const formatsRecords = await Record.find({ format: req.params.id }).populate('artist genre label');
+    res.render('format_detail', { title: 'Format Detail', format, format_records: formatsRecords });
+  } catch (err) {
+    console.error(err);
+  }
 };
