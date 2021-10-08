@@ -70,7 +70,7 @@ exports.record_create_post = [
   body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
   body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
-  body('quantity', 'Quantity must not be empty').trim().isLength({ min: 1 }).escape(),
+  body('quantity', 'Quantity must be positive').trim().isFloat({ min: 1 }).escape(),
   body('genre.*').escape(),
 
   async (req, res, next) => {
@@ -89,6 +89,7 @@ exports.record_create_post = [
 
     if (!errors.isEmpty()) {
       let genres = await Genre.find();
+      let formats = await Format.find();
       for (let i = 0; i < genres.length; i++) {
         if (record.genre.indexOf(genres[i]._id) > -1) {
           genres[i].checked = 'true';
@@ -98,6 +99,7 @@ exports.record_create_post = [
           genres: genres,
           record: record,
           errors: errors.array(),
+          formats: formats,
         });
         return;
       }
