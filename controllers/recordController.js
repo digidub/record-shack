@@ -40,7 +40,7 @@ exports.record_detail = function (req, res, next) {
         return next(err);
       }
       if (results == null) {
-        var err = new Error('record not found');
+        let err = new Error('record not found');
         err.status = 404;
         return next(err);
       }
@@ -48,24 +48,13 @@ exports.record_detail = function (req, res, next) {
     });
 };
 
-exports.record_create_get = function (req, res, next) {
-  async.parallel(
-    {
-      genres: function (callback) {
-        Genre.find(callback);
-      },
-      formats: function (callback) {
-        Format.find(callback);
-      },
-    },
-    function (err, results) {
-      if (err) {
-        return next(err);
-      }
-      console.log(results);
-      res.render('record_form', { title: 'Add new record to database', genres: results.genres, formats: results.formats });
-    }
-  );
+exports.record_create_get = async function (req, res, next) {
+  const findGenres = async () => await Genre.find();
+  const findFormats = async () => await Format.find();
+
+  await Promise.all([findGenres(), findFormats()])
+    .then((data) => res.render('record_form', { title: 'Add new record to database', genres: data[0], formats: data[1] }))
+    .catch(console.log);
 };
 
 exports.record_create_post = [
