@@ -6,31 +6,31 @@ block content
   form(method='POST' action='')
     div.form-group
       label(for='title') Title:
-      input#title.form-control(type='text', placeholder='Name of record' name='title' required='true' value=(undefined===record ? '' : record.title) )
+      input#title.form-control(type='text', placeholder='Name of record' name='title' required='true' value=(record===undefined ? '' : decodeURI(record.title)) )
     div.form-group
       label(for='artist') Artist:
-      input#artist.form-control(type='text', placeholder='Artist Name' name='artist' required='true' value=(undefined===record ? '' : record.artist) )
+      input#artist.form-control(type='text', placeholder='Artist Name' name='artist' required='true' value=(record===undefined ? '' : record.artist.name) )
     div.form-group
       label(for='label') Label:
-      input#label.form-control(type='text', placeholder='Label' name='label' required='true' value=(undefined===record ? '' : record.label))
+      input#label.form-control(type='text', placeholder='Label' name='label' required='true' value=(record===undefined ? '' : record.label.name))
     div.form-group
       label(for='format') Format:
-      select#format.form-control(type='select', placeholder='Select Format' name='format' required='true' value=(undefined===record ? '' : record.format))
+      select#format.form-control(type='select', placeholder='Select Format' name='format' required='true' value=(record===undefined ? '' : record.format))
         for format in formats
           if record
-            option(value=format._id selected=(format._id.toString()===record.format._id.toString() ? 'selected' : false) ) #{format.name}
+            option(value=format._id selected=(format._id.toString()===record.format._id.toString() || format._id.toString() === record. artist) ? 'selected' : false) #{format.name}
           else
             option(value=format._id) #{format.name}
     div.form-group
-      label(for='condition') Format:
-      select#condition.form-control(type='select', placeholder='Select Condition' name='condition' required='true' value=(undefined===record ? '' : record.condition))
+      label(for='condition') Condition:
+      select#condition.form-control(type='select', placeholder='Select Condition' name='condition' required='true' value=(record===undefined ? '' : record.condition))
           option(value='NM') NM
           option(value='VG+') VG+
           option(value='VG') VG
           option(value='G+') G+
     div.form-group
       label(for='quantity') Quantity:
-      input#quantity.form-control(type='number', name='quantity' required='true' value=(undefined===record ? '1' : record.quantity))
+      input#quantity.form-control(type='number', name='quantity' required='true' value=(record===undefined ? '1' : record.quantity))
     div.form-group
       label Genre:
       div
