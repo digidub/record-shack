@@ -65,7 +65,7 @@ exports.record_create_post = [
     next();
   },
 
-  body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape().unescape(),
   body('artist', 'Artist must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
@@ -197,6 +197,26 @@ exports.record_update_post = [
         return;
       }
     } else {
+      let artist;
+      let label;
+      const findArtist = await Artist.findOne({ name: req.body.artist });
+      if (findArtist === null) {
+        artist = new Artist({ name: req.body.artist });
+        record.artist = artist._id;
+      } else {
+        record.artist = findArtist._id;
+      }
+      if (!findArtist) await artist.save();
+
+      const findLabel = await Label.findOne({ name: req.body.artist });
+      if (findLabel === null) {
+        label = new Label({ name: req.body.label });
+        record.label = label._id;
+      } else {
+        record.label = findLabel._id;
+      }
+      if (!findLabel) await label.save();
+
       Record.findByIdAndUpdate(req.params.id, record, {}, function (err, therecord) {
         if (err) {
           return next(err);
