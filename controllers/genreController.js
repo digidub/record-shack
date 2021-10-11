@@ -58,3 +58,30 @@ exports.genre_create_post = [
     }
   },
 ];
+
+exports.genre_delete_get = async function (req, res, next) {
+  const genreToDelete = await Genre.findById(req.params.id);
+  const genresRecords = await Record.find({ genre: req.params.id });
+  console.log(genresRecords);
+  if (genreToDelete === null) {
+    res.redirect('/catalog/genres');
+  }
+  res.render('genre_delete', { title: 'Delete Genre', genre: genreToDelete, genre_records: genresRecords });
+};
+
+exports.genre_delete_post = async function (req, res, next) {
+  const genreToDelete = await Genre.findById(req.body.genreid);
+  const genresRecords = await Record.find({ genre: req.body.genreid });
+
+  if (genresRecords.length > 0) {
+    res.render('genre_delete', { title: 'Delete Genre', genre: genreToDelete, genre_records: genresRecords });
+    return;
+  } else {
+    Genre.findByIdAndRemove(req.body.genreid, function deleteGenre(err) {
+      if (err) {
+        return next(err);
+      }
+      res.redirect('/catalog/genres');
+    });
+  }
+};
