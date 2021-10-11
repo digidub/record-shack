@@ -226,3 +226,13 @@ exports.record_update_post = [
     }
   },
 ];
+
+exports.record_delete_get = async function (req, res, next) {
+  const recordToDelete = await Record.findById(req.params.id);
+  console.log(recordToDelete);
+
+  if (recordToDelete == null) {
+    res.redirect('/catalog/records');
+  }
+  res.render('record_delete', { title: 'Delete record', record: recordToDelete });
+};
