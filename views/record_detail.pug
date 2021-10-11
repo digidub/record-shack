@@ -18,3 +18,9 @@ block content
         | #{record.quantity} in stock 
     else 
         p Out of stock.
+
+  hr
+  p
+    a(href=record.url+'/delete') Delete Record
+  p
+    a(href=record.url+'/update') Update Record
