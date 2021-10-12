@@ -3,7 +3,6 @@ const Artist = require('../models/artist');
 const Genre = require('../models/genre');
 const Label = require('../models/label');
 const Format = require('../models/format');
-const Image = require('../models/image');
 
 const { body, validationResult } = require('express-validator');
 
@@ -86,8 +85,11 @@ exports.record_create_post = [
       quantity: req.body.quantity,
       format: req.body.format,
       genre: req.body.genre,
-      image: req.file.filename,
     });
+
+    if (req.file !== undefined) {
+      record.image = req.file.filename;
+    }
 
     if (!errors.isEmpty()) {
       let genres = await Genre.find();
@@ -179,9 +181,12 @@ exports.record_update_post = [
       quantity: req.body.quantity,
       format: req.body.format,
       genre: typeof req.body.genre === 'undefined' ? [] : req.body.genre,
-      image: req.file.filename,
       _id: req.params.id,
     });
+
+    if (req.file !== undefined) {
+      record.image = req.file.filename;
+    }
 
     if (!errors.isEmpty()) {
       let genres = await Genre.find();
