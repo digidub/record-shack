@@ -4,4 +4,38 @@ body {
 
 a {
   color: #00b7ff;
+  text-decoration: none;
+}
+
+.gridd {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 40px;
+  max-width: auto;
+  width: 100%;
+}
+
+.cardd-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 230px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+}
+
+.cardd-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+}
+
+img:hover {
+  -webkit-filter: opacity(0.5);
+  filter: opacity(0.5);
+}
+
+.cardd-info {
+  padding: 6px;
+  line-height: 1.5;
 }
