@@ -1,22 +1,19 @@
 extends layout
 
 block content
+    h1= title
+    div.gridd
+        each record in artist_records
+            div(class='cardd')
+                a(href=record.url)
+                    div(class='cardd-img')
+                        img(src=record.image_url alt='record-image')
+                div(class='cardd-info')
+                    b
+                        a(href=record.url) !{record.title}
+                    br
+                    a(href=artist.url) #{artist.name}
 
-  h1 Artist: #{artist.name}
 
-  div(style='margin-left:20px;margin-top:20px')
-
-    h4 Releases
-
-    dl
-      each record in artist_records
-        dt
-          a(href=record.url) #{record.title}
-        dd #{record.summary}
-
-      else
-        p This artist has no records.
-
-    hr
-    p
-        a(href=artist.url+'/delete') Delete artist
+        else
+                li There are no records to display by this artist.
