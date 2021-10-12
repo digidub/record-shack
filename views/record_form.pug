@@ -6,7 +6,7 @@ block content
   form(method='POST' action='' enctype='multipart/form-data')
     div.form-group
       label(for='title') Title:
-      input#title.form-control(type='text', placeholder='Name of record' name='title' required='true' value=(record===undefined ? '' : record.title) )
+      input#title.form-control(type='text', placeholder='Name of record' name='title' required='true' value!=(record===undefined ? '' : record.title) )
     div.form-group
       label(for='artist') Artist:
       input#artist.form-control(type='text', placeholder='Artist Name' name='artist' required='true' value=(record===undefined ? '' : record.artist.name) )
