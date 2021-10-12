@@ -13,14 +13,14 @@ exports.index = async function (req, res) {
   const formatCount = async () => await Format.countDocuments({});
 
   await Promise.all([recordCount(), artistCount(), genreCount(), labelCount(), formatCount()])
-    .then((data) => res.render('index', { title: 'Record Shack - Home', data }))
+    .then((data) => res.render('index', { title: 'Record Shack - Home', data, active: 'home' }))
     .catch(console.log);
 };
 
 exports.record_list = function (req, res, next) {
   Record.find({}, 'title artist genre label year')
     .sort({ title: 1 })
-    .populate('artist genre label')
+    .populate('artist genre label format condition')
     .exec(function (err, list_records) {
       if (err) {
         return next(err);
