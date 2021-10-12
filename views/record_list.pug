@@ -1,23 +1,22 @@
 extends layout
 
-block content
-    div(class="py-5")
-        h1= title
-        div(class="row align-items-stretch justify-content-start card-deck")
-            each record in record_list
-                div(class='card m-4' style='width: 18rem')
-                    img(src='#' class='card-img-top' alt='record-image')
-                    div(class='card-body')
-                        h5(class='card-title') 
-                            a(href=record.url) !{record.title}
-                            | 
-                            a(href=record.format.url) (!{record.format.name})
-                        p(class='card-text') 
-                            a(href=record.artist.url) #{record.artist.name}
-                            p
-                            a(href=record.label.url) #{record.label.name}
-                            p
-                            a(href=record.genre.url) #{record.genre.name}
+block content    
+    h1= title
+    div(class="row align-items-stretch justify-content-start card-deck")
+        each record in record_list
+            div(class='card m-4' style='width: 18rem')
+                img(src=record.image_url class='card-img-top' alt='record-image')
+                div(class='card-body')
+                    h5(class='card-title') 
+                        a(href=record.url) !{record.title}
+                        | 
+                        a(href=record.format.url) (!{record.format.name})
+                    p(class='card-text') 
+                        a(href=record.artist.url) #{record.artist.name}
+                        p
+                        a(href=record.label.url) #{record.label.name}
+                        p
+                        a(href=record.genre.url) #{record.genre.name}
 
-            else
-                    li There are no records to display.
+        else
+                li There are no records to display.
