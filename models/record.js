@@ -10,6 +10,7 @@ var RecordSchema = new Schema({
   label: { type: Schema.Types.ObjectId, ref: 'Label', requried: true },
   format: { type: Schema.Types.ObjectId, ref: 'Format', enum: ['12"', '7"', 'LP'], requried: true },
   quantity: { type: Number, min: 0, required: true },
+  image: { type: String },
 });
 
 RecordSchema.virtual('url').get(function () {
