@@ -9,23 +9,31 @@ block content
       a(href=record.artist.url) #{record.artist.name}
     div.release-info
       div.info-line
-        p #[strong Label:] 
+        div.label
+          p #[strong Label:]
+        div.content
           a(href=record.label.url) #{record.label.name}
       div.info-line
-        p #[strong Format:] 
+        div.label
+          p #[strong Format:] 
+        div.content
           a(href=record.format.url) #{record.format.name}
       div.info-line
-        p #[strong Genre:] 
+        div.label
+          p #[strong Genre:]
+        div.content
           each val, index in record.genre
             a(href=val.url) #{val.name}
               if index < record.genre.length - 1
               | , 
-      div.info-line 
-        p #[strong Stock:]
-            if(record.quantity > 0)
-                | #{record.quantity} in stock 
-            else 
-                p Out of stock.
+      div.info-line
+        div.label 
+          p #[strong Stock:]
+        div.content
+          if(record.quantity > 0)
+              | #{record.quantity} in stock 
+          else 
+              p Out of stock.
 
   hr
   p
