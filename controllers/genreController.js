@@ -17,7 +17,7 @@ exports.genre_list = function (req, res, next) {
 exports.genre_detail = async function (req, res, next) {
   try {
     const genre = await Genre.findById(req.params.id);
-    const genresRecords = await Record.find({ genre: req.params.id }).populate('artist genre label');
+    const genresRecords = await Record.find({ genre: req.params.id }).populate('artist label genre format condition');
     res.render('genre_detail', { title: 'Genre Detail', genre, genre_records: genresRecords });
   } catch (err) {
     console.error(err);

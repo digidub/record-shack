@@ -15,7 +15,7 @@ exports.format_list = function (req, res, next) {
 exports.format_detail = async function (req, res, next) {
   try {
     const format = await Format.findById(req.params.id);
-    const formatsRecords = await Record.find({ format: req.params.id }).populate('artist genre label');
+    const formatsRecords = await Record.find({ format: req.params.id }).populate('artist label genre format condition');
     res.render('format_detail', { title: 'Format Detail', format, format_records: formatsRecords });
   } catch (err) {
     console.error(err);
