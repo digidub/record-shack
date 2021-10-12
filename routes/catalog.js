@@ -1,31 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var multer = require('multer');
-var path = require('path');
-
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/images');
-  },
-  filename: function (req, file, cb) {
-    var dateTimeStamp = Date.now();
-    cb(null, file.fieldname + '-' + dateTimeStamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
-  },
-});
-
-var upload = multer({
-  storage: storage,
-  fileFilter: function (req, file, callback) {
-    var ext = path.extname(file.originalname);
-    if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
-      return callback(new Error('Only images are allowed'));
-    }
-    callback(null, true);
-  },
-  limits: {
-    fileSize: 1024 * 1024,
-  },
-});
+var upload = require('../multer');
 
 var record_controller = require('../controllers/recordController');
 var artist_controller = require('../controllers/artistController');
@@ -39,7 +14,7 @@ router.post('/record/create', upload.single('image'), record_controller.record_c
 router.get('/record/:id/delete', record_controller.record_delete_get);
 router.post('/record/:id/delete', record_controller.record_delete_post);
 router.get('/record/:id/update', record_controller.record_update_get);
-router.post('/record/:id/update', record_controller.record_update_post);
+router.post('/record/:id/update', upload.single('image'), record_controller.record_update_post);
 router.get('/record/:id', record_controller.record_detail);
 router.get('/records', record_controller.record_list);
 
