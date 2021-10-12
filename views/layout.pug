@@ -10,16 +10,16 @@ html(lang='en')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     block navbar
-      nav(class='navbar navbar-expand-lg navbar-light bg-light')
+      nav(class='navbar navbar-expand-sm navbar-light bg-light ')
         div(class='container-fluid')
-          div(class="collapse navbar-collapse" id="navbarSupportedContent")
+          div(class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent")
               a(class=('navbar-brand') href='/catalog') Record Shack
               a(class='nav-link' href='/catalog/records') Records
               a(class='nav-link' href='/catalog/artists') Artists
               a(class='nav-link' href='/catalog/genres') Genres
               a(class='nav-link' href='/catalog/labels') Labels
               a(class='nav-link' href='/catalog/formats') Formats
-              hr
+              |
               a(class='nav-link' href='/catalog/genre/create') Create new Genre
               a(class='nav-link' href='/catalog/record/create') Create new Record
 
