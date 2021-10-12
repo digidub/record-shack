@@ -17,4 +17,8 @@ RecordSchema.virtual('url').get(function () {
   return '/catalog/record/' + this._id;
 });
 
+RecordSchema.virtual('image_url').get(function () {
+  return '/public/images/' + this.image;
+});
+
 module.exports = mongoose.model('Record', RecordSchema);
