@@ -35,6 +35,8 @@ exports.record_detail = function (req, res, next) {
     .populate('artist')
     .populate('genre')
     .populate('label')
+    .populate('format')
+    .populate('condition')
     .exec(function (err, results) {
       if (err) {
         return next(err);
