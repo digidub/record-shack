@@ -22,7 +22,7 @@ exports.index = async function (req, res) {
 exports.record_list = function (req, res, next) {
   Record.find({}, 'title artist genre label year')
     .sort({ title: 1 })
-    .populate('artist genre label format condition')
+    .populate('artist genre label format condition image')
     .exec(function (err, list_records) {
       if (err) {
         return next(err);
@@ -86,6 +86,7 @@ exports.record_create_post = [
       quantity: req.body.quantity,
       format: req.body.format,
       genre: req.body.genre,
+      image: req.file.filename,
     });
 
     if (!errors.isEmpty()) {
@@ -125,9 +126,6 @@ exports.record_create_post = [
       if (!findArtist) await artist.save();
       if (!findLabel) await label.save();
       await record.save();
-      await Image.create({
-        name: req.file.filename,
-      });
       res.redirect(record.url);
     }
   },
@@ -181,6 +179,7 @@ exports.record_update_post = [
       quantity: req.body.quantity,
       format: req.body.format,
       genre: typeof req.body.genre === 'undefined' ? [] : req.body.genre,
+      image: req.file.filename,
       _id: req.params.id,
     });
 
