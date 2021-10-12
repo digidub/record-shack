@@ -1,23 +1,31 @@
 extends layout
 
 block content
-
-  h1 Genre: #{genre.name}
-
-  div(style='margin-left:20px;margin-top:20px')
-
-    h4 Records
-
-    dl
+  div(class="py-5")
+    h1 Label: #{genre.name}
+    div(class="row align-items-stretch justify-content-start card-deck")
       each record in genre_records
-        dt
-          a(href=record.url) #{record.title}
-        dd
-          a(href=record.artist.url) #{record.artist.name}
+        div(class='card m-4' style='width: 18rem')
+          img(src=record.image_url class='card-img-top' alt='record-image')
+          div(class='card-body')
+            h5(class='card-title') 
+              a(href=record.url) !{record.title}
+              | 
+              a(href=record.format.url) (!{record.format.name})
+            p(class='card-text') 
+              a(href=record.artist.url) #{record.artist.name}
+              p
+              a(href=record.label.url) #{record.label.name}
+              p
+              a(href=record.genre.url) #{record.genre.name}
 
       else
-        p This genre has no records
+        li There are no records to display.
 
       hr
       p
         a(href=genre.url+'/delete') Delete genre
+
+
+
+
