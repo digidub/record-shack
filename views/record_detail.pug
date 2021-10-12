@@ -3,7 +3,7 @@ extends layout
 block content
   div.release-card
     div.release-thumbnail
-      img(src=record.image_url)
+      a(href=record.image_url): img(src=record.image_url)
     h2.release-header !{record.title}
       |
       | -
@@ -12,25 +12,26 @@ block content
     div.release-info
       div.info-line
         div.label
-          p #[strong Label:]
+          p Label:
         div.content
           a(href=record.label.url) #{record.label.name}
       div.info-line
         div.label
-          p #[strong Format:] 
+          p Format:
         div.content
           a(href=record.format.url) #{record.format.name}
       div.info-line
         div.label
-          p #[strong Genre:]
+          p Genre:
         div.content
           each val, index in record.genre
             a(href=val.url) #{val.name}
               if index < record.genre.length - 1
-              | , 
+                | ,
+                |
       div.info-line
-        div.label 
-          p #[strong Stock:]
+        div.label
+          p Stock:
         div.content
           if(record.quantity > 0)
               | #{record.quantity} in stock 
