@@ -3,6 +3,8 @@ const Artist = require('../models/artist');
 const Genre = require('../models/genre');
 const Label = require('../models/label');
 const Format = require('../models/format');
+const Image = require('../models/image');
+
 const { body, validationResult } = require('express-validator');
 
 exports.index = async function (req, res) {
@@ -64,7 +66,6 @@ exports.record_create_post = [
     }
     next();
   },
-
   body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape().unescape(),
   body('artist', 'Artist must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
@@ -123,7 +124,10 @@ exports.record_create_post = [
       }
       if (!findArtist) await artist.save();
       if (!findLabel) await label.save();
-      const newRecord = await record.save();
+      await record.save();
+      await Image.create({
+        name: req.file.filename,
+      });
       res.redirect(record.url);
     }
   },
