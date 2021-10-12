@@ -2,7 +2,7 @@ extends layout
 
 block content
   div(class="py-5")
-    h1 Label: #{genre.name}
+    h1 Genre: #{genre.name}
     div(class="row align-items-stretch justify-content-start card-deck")
       each record in genre_records
         div(class='card m-4' style='width: 18rem')
