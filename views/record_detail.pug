@@ -1,23 +1,31 @@
 extends layout
 
 block content
-  h1 Title: #{record.title}
-
-  p #[strong Artist:]
-    a(href=record.artist.url) #{record.artist.name}
-  p #[strong Label:] 
-    a(href=record.label.url) #{record.label.name}
-  p #[strong Genre:] 
-    each val, index in record.genre
-      a(href=val.url) #{val.name}
-      if index < record.genre.length - 1
-        | , 
-
-    p #[strong Stock:]
-    if(record.quantity > 0)
-        | #{record.quantity} in stock 
-    else 
-        p Out of stock.
+  div.release-card
+    div.release-thumbnail
+      img(src=record.image_url)
+    h2.release-header= record.title
+      | - 
+      a(href=record.artist.url) #{record.artist.name}
+    div.release-info
+      div.info-line
+        p #[strong Label:] 
+          a(href=record.label.url) #{record.label.name}
+      div.info-line
+        p #[strong Format:] 
+          a(href=record.format.url) #{record.format.name}
+      div.info-line
+        p #[strong Genre:] 
+          each val, index in record.genre
+            a(href=val.url) #{val.name}
+              if index < record.genre.length - 1
+              | , 
+      div.info-line 
+        p #[strong Stock:]
+            if(record.quantity > 0)
+                | #{record.quantity} in stock 
+            else 
+                p Out of stock.
 
   hr
   p
