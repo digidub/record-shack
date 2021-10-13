@@ -5,51 +5,54 @@ block content
 
   form(method='POST' action='' enctype='multipart/form-data')
     div.form-group
-      label(for='title') Title:
+      label(for='title' class="col-sm-2 col-form-label col-form-label-lg") Title:
       input#title.form-control(type='text', placeholder='Name of record' name='title' required='true' value!=(record===undefined ? '' : record.title) )
     div.form-group
-      label(for='artist') Artist:
+      label(for='artist' class="col-sm-2 col-form-label col-form-label-lg") Artist:
       input#artist.form-control(type='text', placeholder='Artist Name' name='artist' required='true' value!=(record===undefined ? '' : record.artist.name) )
     div.form-group
-      label(for='label') Label:
+      label(for='label' class="col-sm-2 col-form-label col-form-label-lg") Label:
       input#label.form-control(type='text', placeholder='Label' name='label' required='true' value!=(record===undefined ? '' : record.label.name))
+    div.row
+      div.col
+        div.form-group
+          label(for='format' class="col-sm-2 col-form-label col-form-label-lg") Format:
+          select#format.form-control(type='select', placeholder='Select Format' name='format' required='true' value=(record===undefined ? '' : record.format))
+            for format in formats
+              if record
+                option(value=format._id selected=(format._id.toString()===record.format._id.toString() || format._id.toString() === record. artist) ? 'selected' : false) #{format.name}
+              else
+                option(value=format._id) #{format.name}
+      div.col
+        div.form-group
+          label(for='condition' class="col-sm-2 col-form-label col-form-label-lg") Condition:
+          select#condition.form-control(type='select', placeholder='Select Condition' name='condition' required='true' value=(record===undefined ? '' : record.condition))
+              option(value='NM') NM
+              option(value='VG+') VG+
+              option(value='VG') VG
+              option(value='G+') G+
+      div.col
+        div.form-group
+          label(for='quantity' class="col-sm-2 col-form-label col-form-label-lg") Quantity:
+          input#quantity.form-control(type='number', name='quantity' required='true' value=(record===undefined ? '1' : record.quantity))
     div.form-group
-      label(for='format') Format:
-      select#format.form-control(type='select', placeholder='Select Format' name='format' required='true' value=(record===undefined ? '' : record.format))
-        for format in formats
-          if record
-            option(value=format._id selected=(format._id.toString()===record.format._id.toString() || format._id.toString() === record. artist) ? 'selected' : false) #{format.name}
-          else
-            option(value=format._id) #{format.name}
-    div.form-group
-      label(for='condition') Condition:
-      select#condition.form-control(type='select', placeholder='Select Condition' name='condition' required='true' value=(record===undefined ? '' : record.condition))
-          option(value='NM') NM
-          option(value='VG+') VG+
-          option(value='VG') VG
-          option(value='G+') G+
-    div.form-group
-      label(for='quantity') Quantity:
-      input#quantity.form-control(type='number', name='quantity' required='true' value=(record===undefined ? '1' : record.quantity))
-    div.form-group
-      label Genre:
+      label(for='genre' class="col-sm-2 col-form-label col-form-label-lg") Genre:
       div
         for genre in genres
           div(style='display: inline; padding-right:10px;')
             input.checkbox-input(type='checkbox', name='genre', id=genre._id, value=genre._id, checked=genre.checked )
             label(for=genre._id) #{genre.name}
     div.form-group
-      label(for='image') Image:
+      label(for='image' class="col-sm-2 col-form-label col-form-label-lg") Image:
       div
         if record
           if record.image
-            p= record.image
+            input(class='form-control-plaintext' name='existing_image' value=(record.image))
             div
               img(src=(record.image_url===undefined ? '' : record.image_url) class='form-image-preview')
-            input(type='hidden' name='existing_image' value=(record.image))
           else 
             p 'No Image Selected'
-      input#image.form-control(type='file', placeholder='Upload from computer' name='image')
+      input#image.form-control-file(type='file', placeholder='Upload from computer' name='image')
     button.btn.btn-primary(type='submit') Submit
 
   if errors
