@@ -9,10 +9,10 @@ block content
       input#title.form-control(type='text', placeholder='Name of record' name='title' required='true' value!=(record===undefined ? '' : record.title) )
     div.form-group
       label(for='artist') Artist:
-      input#artist.form-control(type='text', placeholder='Artist Name' name='artist' required='true' value=(record===undefined ? '' : record.artist.name) )
+      input#artist.form-control(type='text', placeholder='Artist Name' name='artist' required='true' value!=(record===undefined ? '' : record.artist.name) )
     div.form-group
       label(for='label') Label:
-      input#label.form-control(type='text', placeholder='Label' name='label' required='true' value=(record===undefined ? '' : record.label.name))
+      input#label.form-control(type='text', placeholder='Label' name='label' required='true' value!=(record===undefined ? '' : record.label.name))
     div.form-group
       label(for='format') Format:
       select#format.form-control(type='select', placeholder='Select Format' name='format' required='true' value=(record===undefined ? '' : record.format))
@@ -40,6 +40,14 @@ block content
             label(for=genre._id) #{genre.name}
     div.form-group
       label(for='image') Image:
+      div
+        if record.image
+          p= record.image
+          div
+            img(src=record.image_url class='form-image-preview')
+          input(type='hidden' name='existing_image' value=(record.image))
+        else 
+          p 'No Image Selected'
       input#image.form-control(type='file', placeholder='Upload from computer' name='image')
     button.btn.btn-primary(type='submit') Submit
 
