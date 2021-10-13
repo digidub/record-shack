@@ -8,7 +8,7 @@ exports.format_list = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.render('format_list', { title: 'Format List', format_list: list_formats });
+      res.render('format_list', { title: 'Formats', format_list: list_formats });
     });
 };
 

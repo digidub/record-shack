@@ -26,7 +26,7 @@ exports.record_list = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.render('record_list', { title: 'Record Stock', record_list: list_records });
+      res.render('record_list', { title: 'All Records', record_list: list_records });
     });
 };
 

@@ -8,7 +8,7 @@ exports.label_list = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.render('label_list', { title: 'Label List', label_list: list_labels });
+      res.render('label_list', { title: 'Labels', label_list: list_labels });
     });
 };
 
