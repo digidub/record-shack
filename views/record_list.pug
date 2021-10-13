@@ -1,17 +1,19 @@
 extends layout
 
 block content
-    each record in record_list
-        div(class='cardd')
-            a(href=record.url)
-                div(class='cardd-img')
-                    img(src=record.image_url alt='record-image')
-            div(class='cardd-info')
-                b
-                    a(href=record.url) !{record.title}
-                br
-                a(href=record.artist.url) #{record.artist.name}
+    h1= title
+    div.gridd
+        each record in record_list
+            div(class='cardd')
+                a(href=record.url)
+                    div(class='cardd-img')
+                        img(src=record.image_url alt='record-image')
+                div(class='cardd-info')
+                    b
+                        a(href=record.url) !{record.title}
+                    br
+                    a(href=record.artist.url) #{record.artist.name}
 
 
-    else
-            li There are no records to display.
+        else
+                li There are no records to display.
