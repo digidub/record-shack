@@ -8,7 +8,7 @@ exports.artist_list = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.render('artist_list', { title: 'Artist List', artist_list: list_artists });
+      res.render('artist_list', { title: 'Artists', artist_list: list_artists });
     });
 };
 
