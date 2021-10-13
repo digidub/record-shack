@@ -138,7 +138,7 @@ exports.record_create_post = [
 exports.record_update_get = async function (req, res, next) {
   const findGenres = async () => await Genre.find();
   const findFormats = async () => await Format.find();
-  const findRecordToUpdate = async () => await Record.findById(req.params.id).populate('artist').populate('genre').populate('label');
+  const findRecordToUpdate = async () => await Record.findById(req.params.id).populate('artist genre label format');
 
   const genres = await findGenres();
   const recordToUpdate = await findRecordToUpdate();
@@ -173,6 +173,7 @@ exports.record_update_post = [
   body('genre.*').escape(),
 
   async (req, res, next) => {
+    console.log(req.body);
     const errors = validationResult(req);
 
     const record = new Record({
@@ -185,6 +186,10 @@ exports.record_update_post = [
       genre: typeof req.body.genre === 'undefined' ? [] : req.body.genre,
       _id: req.params.id,
     });
+
+    if (req.file === undefined && req.body.existing_image) {
+      record.image = req.body.existing_image;
+    }
 
     if (req.file !== undefined) {
       record.image = req.file.filename;
