@@ -72,7 +72,7 @@ exports.record_create_post = [
   body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
   body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
-  body('quantity', 'Quantity must be positive').trim().isFloat({ min: 1 }).escape(),
+  body('quantity', 'Quantity must not be negative').trim().isFloat({ min: 0 }).escape(),
   body('genre.*').escape(),
 
   async (req, res, next) => {
@@ -169,7 +169,7 @@ exports.record_update_post = [
   body('label', 'Label must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('condition', 'Condition must not be empty').trim().isLength({ min: 1 }).escape(),
   body('format', 'Format must not be empty').trim().isLength({ min: 1 }).escape(),
-  body('quantity', 'Quantity must be positive').trim().isFloat({ min: 1 }).escape(),
+  body('quantity', 'Quantity must not be negative').trim().isFloat({ min: 0 }).escape(),
   body('genre.*').escape(),
 
   async (req, res, next) => {
