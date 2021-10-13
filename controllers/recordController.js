@@ -32,11 +32,7 @@ exports.record_list = function (req, res, next) {
 
 exports.record_detail = function (req, res, next) {
   Record.findById(req.params.id)
-    .populate('artist')
-    .populate('genre')
-    .populate('label')
-    .populate('format')
-    .populate('condition')
+    .populate('artist genre label format condition image')
     .exec(function (err, results) {
       if (err) {
         return next(err);
@@ -77,7 +73,6 @@ exports.record_create_post = [
 
   async (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors.mapped());
 
     const record = new Record({
       title: req.body.title,
@@ -143,7 +138,6 @@ exports.record_update_get = async function (req, res, next) {
   const genres = await findGenres();
   const recordToUpdate = await findRecordToUpdate();
   const formats = await findFormats();
-  console.log(recordToUpdate);
 
   for (let allGenres = 0; allGenres < genres.length; allGenres++) {
     for (let recordsGenres = 0; recordsGenres < recordToUpdate.genre.length; recordsGenres++) {
@@ -173,7 +167,6 @@ exports.record_update_post = [
   body('genre.*').escape(),
 
   async (req, res, next) => {
-    console.log(req.body);
     const errors = validationResult(req);
 
     const record = new Record({
