@@ -5,18 +5,18 @@ block content
 
   form(method='POST' action='' enctype='multipart/form-data')
     div.form-group
-      label(for='title' class="col-sm-2 col-form-label col-form-label-lg") Title:
+      label(for='title' class='col-sm-2 col-form-label col-form-label-lg') Title:
       input#title.form-control(type='text', placeholder='Name of record' name='title' required='true' value!=(record===undefined ? '' : record.title) )
     div.form-group
-      label(for='artist' class="col-sm-2 col-form-label col-form-label-lg") Artist:
+      label(for='artist' class='col-sm-2 col-form-label col-form-label-lg') Artist:
       input#artist.form-control(type='text', placeholder='Artist Name' name='artist' required='true' value!=(record===undefined ? '' : record.artist.name) )
     div.form-group
-      label(for='label' class="col-sm-2 col-form-label col-form-label-lg") Label:
+      label(for='label' class='col-sm-2 col-form-label col-form-label-lg') Label:
       input#label.form-control(type='text', placeholder='Label' name='label' required='true' value!=(record===undefined ? '' : record.label.name))
     div.row
       div.col
         div.form-group
-          label(for='format' class="col-sm-2 col-form-label col-form-label-lg") Format:
+          label(for='format' class='col-sm-2 col-form-label col-form-label-lg') Format:
           select#format.form-control(type='select', placeholder='Select Format' name='format' required='true' value=(record===undefined ? '' : record.format))
             for format in formats
               if record
@@ -25,7 +25,7 @@ block content
                 option(value=format._id) #{format.name}
       div.col
         div.form-group
-          label(for='condition' class="col-sm-2 col-form-label col-form-label-lg") Condition:
+          label(for='condition' class='col-sm-2 col-form-label col-form-label-lg') Condition:
           select#condition.form-control(type='select', placeholder='Select Condition' name='condition' required='true' value=(record===undefined ? '' : record.condition))
               option(value='NM') NM
               option(value='VG+') VG+
@@ -33,17 +33,17 @@ block content
               option(value='G+') G+
       div.col
         div.form-group
-          label(for='quantity' class="col-sm-2 col-form-label col-form-label-lg") Quantity:
+          label(for='quantity' class='col-sm-2 col-form-label col-form-label-lg') Quantity:
           input#quantity.form-control(type='number', name='quantity' required='true' value=(record===undefined ? '1' : record.quantity))
     div.form-group
-      label(for='genre' class="col-sm-2 col-form-label col-form-label-lg") Genre:
+      label(for='genre' class='col-sm-2 col-form-label col-form-label-lg') Genre:
       div
         for genre in genres
           div(style='display: inline; padding-right:10px;')
             input.checkbox-input(type='checkbox', name='genre', id=genre._id, value=genre._id, checked=genre.checked )
             label(for=genre._id) #{genre.name}
     div.form-group
-      label(for='image' class="col-sm-2 col-form-label col-form-label-lg") Image:
+      label(for='image' class='col-sm-2 col-form-label col-form-label-lg') Image:
       div
         if record
           if record.image
