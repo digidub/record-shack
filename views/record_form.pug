@@ -41,13 +41,14 @@ block content
     div.form-group
       label(for='image') Image:
       div
-        if record.image
-          p= record.image
-          div
-            img(src=record.image_url class='form-image-preview')
-          input(type='hidden' name='existing_image' value=(record.image))
-        else 
-          p 'No Image Selected'
+        if record
+          if record.image
+            p= record.image
+            div
+              img(src=(record.image_url===undefined ? '' : record.image_url) class='form-image-preview')
+            input(type='hidden' name='existing_image' value=(record.image))
+          else 
+            p 'No Image Selected'
       input#image.form-control(type='file', placeholder='Upload from computer' name='image')
     button.btn.btn-primary(type='submit') Submit
 
