@@ -1,35 +1,36 @@
 extends layout
 
 block content
+  div(class='page-container')
+    div(class='page-wrapper')
+      h1= title
+      p Welcome to #[em Record Shack], a simple inventory website for your favourite vinyl records.
 
-    h1= title
-    p Welcome to #[em Record Shack], a simple inventory website for your favourite vinyl records.
+      h2 Music Database
 
-    h2 Music Database
+      if error
+        p Error getting dynamic content.
+      else
+        p The library has the following record counts:
 
-    if error
-      p Error getting dynamic content.
-    else
-      p The library has the following record counts:
-
-      table(class='table')
-        thead
-          tr
-            th(scope='col') Category
-            th(scope='col') Count
-        tbody
-          tr
-            th(scope='row') #[strong Records]
-            td !{data[0]}
-          tr
-            th(scope='row') #[strong Artists]
-            td !{data[1]}
-          tr
-            th(scope='row') #[strong Labels]
-            td !{data[2]}
-          tr
-            th(scope='row') #[strong Genres]
-            td !{data[3]}
-          tr
-            th(scope='row') #[strong Formats]
-            td !{data[4]}
+        table(class='table')
+          thead
+            tr
+              th(scope='col') Category
+              th(scope='col') Count
+          tbody
+            tr
+              th(scope='row') #[strong Records]
+              td !{data[0]}
+            tr
+              th(scope='row') #[strong Artists]
+              td !{data[1]}
+            tr
+              th(scope='row') #[strong Labels]
+              td !{data[2]}
+            tr
+              th(scope='row') #[strong Genres]
+              td !{data[3]}
+            tr
+              th(scope='row') #[strong Formats]
+              td !{data[4]}
