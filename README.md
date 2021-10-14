@@ -4,7 +4,7 @@ A CRUD app built using Node.JS, Express, Mongoose, MongoDB and Bootstrap. Built 
 
 ## Project Link
 
-[View the project here](https://digidub.github.io/record-shack/)
+[View the project here](https://safe-temple-21179.herokuapp.com/)
 
 ![Demo](https://www.alexcodes.co.uk/inventory.gif 'Battleships demo')
 
